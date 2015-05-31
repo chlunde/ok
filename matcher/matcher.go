@@ -13,7 +13,7 @@ type Entry struct {
 	Score   float64
 	Start   int
 	End     int
-	Matched map[int]bool
+	Matched []bool
 }
 
 type Matches []Entry
@@ -22,8 +22,8 @@ func (m Matches) Swap(i, j int)      { m[i], m[j] = m[j], m[i] }
 func (m Matches) Len() int           { return len(m) }
 func (m Matches) Less(i, j int) bool { return m[j].Score < m[i].Score }
 
-func Score(search, choice string) (score float64, matched map[int]bool, start, end int) {
-	matched = make(map[int]bool)
+func Score(search, choice string) (score float64, matched []bool, start, end int) {
+	matched = make([]bool, len(choice))
 
 	for _, r := range search {
 		if index := strings.IndexRune(choice[end:], r); index == -1 {
@@ -33,12 +33,12 @@ func Score(search, choice string) (score float64, matched map[int]bool, start, e
 		} else {
 			end += index
 			matched[end] = true
-			score += 1
 
-			if len(matched) == 1 {
+			if score == 0 {
 				start = end
 			}
 
+			score += 1
 			end += 1
 		}
 	}
