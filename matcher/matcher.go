@@ -25,6 +25,16 @@ func (m Matches) Less(i, j int) bool { return m[j].Score < m[i].Score }
 func Score(search, choice string) (score float64, matched []bool, start, end int) {
 	matched = make([]bool, len(choice))
 
+	if index := strings.Index(choice, search); index != -1 {
+		start = index
+		end = start + len(search)
+		score += float64(len(choice)) + 1.0/float64(end-start+1)
+		for i := start; i < end; i++ {
+			matched[i] = true
+		}
+		return
+	}
+
 	for _, r := range search {
 		if index := strings.IndexRune(choice[end:], r); index == -1 {
 			score = 0
