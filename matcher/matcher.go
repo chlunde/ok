@@ -55,6 +55,21 @@ func Score(search, choice string) (score float64, matched []bool, start, end int
 
 	score += 1.0 / float64(end-start+1)
 
+	next := start
+	if next == 0 {
+		next = 1
+	}
+	score1, matched1, start1, end1 := Score(search, choice[next:])
+	if score1 > score {
+		for i := 0; i < next; i++ {
+			matched[i] = false
+		}
+		for i, v := range matched1 {
+			matched[i+next] = v
+		}
+		return score1, matched, next + start1, next + end1
+	}
+
 	return
 }
 
